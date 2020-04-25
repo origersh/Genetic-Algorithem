@@ -21,7 +21,9 @@ WORLD = Population.Population(SCREEN, GOAL, 10)
 
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+        if event.type == pygame.QUIT:
+            print("Congradulations! You've reached generation: #{}".format(WORLD.gen))
+            sys.exit()
     
     # SCREEN.fill(WHITE)
     MAZE.draw()
@@ -38,4 +40,3 @@ while True:
         pygame.display.update()
 
     CLOCK.tick(100)
-print("Congradulations! You've reached generation: #{}".format(WORLD.gen))
