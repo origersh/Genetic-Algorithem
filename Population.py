@@ -2,6 +2,7 @@ import pygame, Dot
 from random import uniform
 pygame.init()
 
+
 class Population():
 # ------------------------------------------------------------
     def __init__(self, screen, goal, size):
@@ -12,9 +13,10 @@ class Population():
 
         self.fitnessSum = 0.0
         self.gen = 1
-        # print(f"Generation: #{self.gen}")
         self.bestDot = 0
         self.minStep = 400
+
+        self.first2reach = True
         
         for i in range(self.size):
             self.dots.append(Dot.Dot(self.screen, self.goal))
@@ -26,7 +28,7 @@ class Population():
 # ------------------------------------------------------------
     def update(self, maze):
         for i in range(self.size):   ####
-            if self.dots[i].brain.step > self.minStep:
+            if self.dots[i].brain.step >= self.minStep:
                 self.dots[i].dead = True
             else:
                 self.dots[i].update(maze)
@@ -54,7 +56,6 @@ class Population():
             newDots.append(parent.giveMeBaby())
         self.dots = newDots
         self.gen += 1
-        # if self.gen % 10 == 0: print(f"Generation: #{self.gen}")
 # ------------------------------------------------------------
     def calculateFintnessSum(self):
         self.fitnessSum = 0.0
@@ -63,7 +64,7 @@ class Population():
 # ------------------------------------------------------------
     def selectParent(self):
         rand = uniform(0.0, self.fitnessSum)
-        runningSum = 0
+        runningSum = 0.0
         for i in range(self.size):
             runningSum += self.dots[i].fitness
             if runningSum > rand: return self.dots[i]
@@ -81,4 +82,7 @@ class Population():
         self.bestDot = maxIndex
 
         if self.dots[self.bestDot].reachedGoal:
+            if self.first2reach:
+                print(f"First generation to reach the goal: #{self.gen}")
+                self.first2reach = False
             self.minStep = self.dots[self.bestDot].brain.step
