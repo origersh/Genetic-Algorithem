@@ -15,7 +15,7 @@ class Dot:
         self.vel = [0,0]
         self.acc = (0,0)
         
-        self.brain = Brain.Brain(400)
+        self.brain = Brain.Brain(600)
         
         self.dead = False
         self.reachedGoal = False
@@ -28,7 +28,7 @@ class Dot:
         else:
             pygame.draw.circle(self.screen, BLACK, (self.x,self.y), self.radius)
 # ------------------------------------------------------------
-    def move(self):
+    def move(self, maze):
         if len(self.brain.directions) > self.brain.step:
             self.acc = self.brain.directions[self.brain.step]
             self.brain.step += 1
@@ -36,9 +36,12 @@ class Dot:
 
         if -5 <= self.vel[0]+self.acc[0] <= 5: self.vel[0] += self.acc[0]
         if -5 <= self.vel[1]+self.acc[1] <= 5: self.vel[1] += self.acc[1]
-        
-        self.x += self.vel[0]
-        self.y += self.vel[1]
+
+        if self.hitMaze(maze, self.x+self.vel[0], self.y+self.vel[1]):
+            self.dead = True
+        else:
+            self.x += self.vel[0]
+            self.y += self.vel[1]
 # ------------------------------------------------------------
     def update(self, maze):
         x1 = self.goal.x + self.goal.width/2
@@ -48,32 +51,27 @@ class Dot:
         dis = int(math.hypot(x2 - x1, y2 - y1) / self.radius*2)
 
         if (not self.dead) and (not self.reachedGoal):
-            self.move()
-            width = self.screen.get_width()
-            height = self.screen.get_height()
-            if self.x < self.radius*2 or self.x > width-self.radius*2 or self.y < self.radius*2 or self.y > height-self.radius*2:
-                self.dead = True
-            elif dis < self.goal.width: self.reachedGoal = True
-            elif self.hitMaze(maze): self.dead = True
+            self.move(maze)
+            if dis < self.goal.width:
+                self.reachedGoal = True
 # ------------------------------------------------------------
     def calculateFintness(self):
         x1 = self.goal.x + self.goal.width/2
         x2 = self.x + self.radius
         y1 = self.goal.y + self.goal.height/2
         y2 = self.y + self.radius
-        distanceToGoal = math.hypot(x2 - x1, y2 - y1) / self.radius*2 # math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-        if self.reachedGoal:
-            self.fitness = 10000.0/(self.brain.step**2)
-        else:
-            self.fitness = 1.0/(distanceToGoal**2)
+        distanceToGoal = round((math.hypot(x2 - x1, y2 - y1) / self.radius*2), 3) # math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+        if self.reachedGoal: self.fitness = 10000.0/(self.brain.step**2)
+        else: self.fitness = 1.0/(distanceToGoal**2)
 # ------------------------------------------------------------
     def giveMeBaby(self):
         baby = Dot(self.screen, self.goal)
         baby.brain = self.brain.clone()
         return baby
 # ------------------------------------------------------------
-    def hitMaze(self, maze):
+    def hitMaze(self, maze, x, y):
         for rect in maze:
-            if rect.left < self.x < rect.left+rect.width and rect.top < self.y < rect.top+rect.height:
+            if rect.left < x < rect.left+rect.width and rect.top < y < rect.top+rect.height:
                 return True
         return False
