@@ -1,4 +1,4 @@
-import sys, pygame, Dot, Population, Maze
+import sys, pygame, Population, Maze
 pygame.init()
 
 # ------------------------------------------------------------
@@ -14,8 +14,11 @@ GOAL_X, GOAL_Y = int(SCREEN_WIDTH/2), 20
 GOAL_RADIUS = 6
 GOAL = pygame.draw.circle(SCREEN, RED, (GOAL_X, GOAL_Y), GOAL_RADIUS)
 
+FONT = pygame.font.SysFont("Fixedsys", 20)
+
 MAZE = Maze.Maze(SCREEN)
-WORLD = Population.Population(SCREEN, GOAL, 300)
+WORLD = Population.Population(SCREEN, GOAL, 400)
+# SCREEN.fill(WHITE)
 # ------------------------------------------------------------
 
 while True:
@@ -34,8 +37,10 @@ while True:
         WORLD.mutateDemBabies()
         # SCREEN.fill(WHITE)
     else:
+        TEXT = FONT.render(f"Generation: #{WORLD.gen}", True, (0,0,0))
+        SCREEN.blit(TEXT, (10, 5))
         WORLD.update(MAZE.maze)
         WORLD.draw()
         pygame.display.update()
 
-    # CLOCK.tick(100)
+    # CLOCK.tick(50)
