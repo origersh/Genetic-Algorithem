@@ -2,7 +2,6 @@ import pygame, Dot
 from random import uniform
 pygame.init()
 
-
 class Population():
 # ------------------------------------------------------------
     def __init__(self, screen, goal, size):
