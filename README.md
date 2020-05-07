@@ -1,5 +1,5 @@
 # Genetic-Algorithem
 ### Goal:
-Teach a bunch of dots to solve a maze
+Make an AI-based: Genetic Algorithem to teach my computer to solve mazes
 ##### Author: `ori1cannoli`
 ##### Langage: `Python (3.8)`
