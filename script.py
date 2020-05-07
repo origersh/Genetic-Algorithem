@@ -1,3 +1,9 @@
+"""
+#
+# Dots: A genetic algorithem (AI) to teach my computer to solve mazes
+# 
+"""
+
 import sys, pygame, Population, Maze
 pygame.init()
 
